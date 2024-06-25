@@ -5,6 +5,8 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
 from rest_framework.views import Response, APIView
 
+from app01.models import *
+
 
 def upload_file_in_chunks(file, chunk_size=1024 * 1024):
     """
@@ -135,3 +137,24 @@ def file_upload(request):
             f.write(chunk)
 
     return HttpResponse("上传成功")
+
+
+class DataAPIView(APIView):
+
+    def get(self, request):
+        # data = Student.objects.raw("SELECT * FROM app01_student")
+        data = Student.objects.all()
+        for obj in data:
+            print(obj.name)
+            print(type(obj))
+
+        return Response({"data": data.values()}, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        data = request.data
+        print(data)
+        print(type(data))
+
+        Student.objects.create(**data)
+
+        return Response({"msg": "添加成功"}, status=status.HTTP_201_CREATED)
