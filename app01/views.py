@@ -1,6 +1,8 @@
 import os
+from django.utils import timezone
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
+from django.core import serializers
 
 from rest_framework import status
 from rest_framework.views import Response, APIView
@@ -141,7 +143,7 @@ def file_upload(request):
 
 class DataAPIView(APIView):
 
-    def get(self, request):
+    def get_1(self, request):
         # data = Student.objects.raw("SELECT * FROM app01_student")
         data = Student.objects.all()
         for obj in data:
@@ -149,6 +151,14 @@ class DataAPIView(APIView):
             print(type(obj))
 
         return Response({"data": data.values()}, status=status.HTTP_200_OK)
+
+    def get(self, request):
+        data = Student.objects.all()
+
+        data = serializers.serialize("json", data, fields=("name", "age", "create_time"))
+
+        # return JsonResponse(data, safe=False, status=status.HTTP_200_OK)
+        return HttpResponse(data, content_type="application/json", status=200)
 
     def post(self, request):
         data = request.data
