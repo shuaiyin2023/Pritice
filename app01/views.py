@@ -162,8 +162,12 @@ class DataAPIView(APIView):
 
     def post(self, request):
         data = request.data
-        print(data)
-        print(type(data))
+
+        # key = "Postman-Token"
+        # print(request.headers)
+        # token = "a900def9-a5dc-4ba3-942b-dedc785e0818"
+        # if request.headers[key] != token:
+        #     return Response({"msg": "Token错误"}, status=status.HTTP_401_UNAUTHORIZED)
 
         Student.objects.create(**data)
 
