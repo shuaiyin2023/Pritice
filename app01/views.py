@@ -1,5 +1,7 @@
 import os
+import datetime
 from django.utils import timezone
+from django.db.models import Avg, F
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
@@ -152,13 +154,39 @@ class DataAPIView(APIView):
 
         return Response({"data": data.values()}, status=status.HTTP_200_OK)
 
+    @staticmethod
+    def format_time(time_obj):
+        return time_obj.strftime("%Y-%m-%d %H:%M:%S")
+
     def get(self, request):
-        data = Student.objects.all()
+        data = Student.objects.aggregate(Avg("age"))  # aggregate()对queryset总体进行聚合(这里是求所有学生的平均年龄)
+        query_set = Student.objects.annotate(avg_age=Avg("age"))  # annotate()对queryset的每一条记录进行聚合(这里是求的每条记录的平均年龄)
 
-        data = serializers.serialize("json", data, fields=("name", "age", "create_time"))
+        for item in query_set:
+            item.create_time = self.format_time(item.create_time)
+            item.update_time = self.format_time(item.update_time)
 
-        # return JsonResponse(data, safe=False, status=status.HTTP_200_OK)
-        return HttpResponse(data, content_type="application/json", status=200)
+        serializer_data = [
+            {
+                "id": obj.id,
+                "create_time": obj.create_time,
+                "update_time": obj.update_time,
+                "name": obj.name,
+                "age": obj.age,
+                "email": obj.email,
+                "number": obj.number,
+                "gender": obj.get_gender_display(),
+                "avg_age": obj.avg_age
+            }
+            for obj in query_set
+        ]
+
+        # data = serializers.serialize("json", data, fields=("name", "age", "create_time", "gender"))
+        # data = serializers.serialize("json", data)
+
+        # return JsonResponse(query_set, safe=False, status=status.HTTP_200_OK)
+        # return HttpResponse(data, content_type="application/json", status=200)
+        return Response({"data": serializer_data, "avg_age": data["age__avg"]}, status=status.HTTP_200_OK)
 
     def post(self, request):
         data = request.data

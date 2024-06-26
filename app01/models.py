@@ -10,11 +10,17 @@ class BaseModel(models.Model):
 
 
 class Person(BaseModel):
+    gender_choices = (
+        ('male', '男'),
+        ('female', '女'),
+    )
+
     name = models.CharField(max_length=20, verbose_name="姓名")
     age = models.IntegerField(verbose_name="年龄")
     email = models.EmailField(verbose_name="邮箱")
     number = models.CharField(max_length=20, verbose_name="电话号码")
     address = models.CharField(max_length=50, verbose_name="地址")
+    gender = models.CharField(max_length=6, choices=gender_choices, verbose_name="性别")
 
     class Meta:
         verbose_name = "人员信息"
@@ -22,14 +28,23 @@ class Person(BaseModel):
 
 
 class Student(BaseModel):
+    gender_choices = (
+        ('male', '男'),
+        ('female', '女'),
+    )
+
     name = models.CharField(max_length=20, verbose_name="姓名")
     age = models.IntegerField(verbose_name="年龄")
     email = models.EmailField(verbose_name="邮箱")
     number = models.CharField(max_length=20, verbose_name="电话号码")
+    gender = models.CharField(max_length=6, choices=gender_choices, verbose_name="性别")
 
     class Meta:
         verbose_name = "学生信息"
         verbose_name_plural = verbose_name
+
+    def get_gender(self):
+        return self.get_gender_display()
 
 
 class Teacher(BaseModel):
