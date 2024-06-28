@@ -2,8 +2,11 @@ import os
 import datetime
 from django.utils import timezone
 from django.db.models import Avg, F
+from functools import wraps
+from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 from django.core import serializers
 
 from rest_framework import status
@@ -40,7 +43,6 @@ def upload_file_in_chunks(file, chunk_size=1024 * 1024):
         # 模拟上传分片的过程
         print(f"正在上传第 {chunk_number} 个分片，大小为 {len(chunk)} 字节")
         # 这里可以调用实际的上传函数，例如：upload_chunk(chunk)
-
         if not os.path.exists(cache_path):
             os.makedirs(cache_path)
         chunk_path = os.path.join(cache_path, f"chunk_{chunk_number}")
@@ -200,3 +202,43 @@ class DataAPIView(APIView):
         Student.objects.create(**data)
 
         return Response({"msg": "添加成功"}, status=status.HTTP_201_CREATED)
+
+
+@require_http_methods(["GET", "POST"])
+@csrf_exempt
+def test_methods(request, data):
+    print("接收的data: ", data)
+    print("发起的请求类型正确")
+    return HttpResponse("请求成功")
+
+
+def redirect_view(request):
+    obj = Student.objects.get(pk=1)
+    # return redirect(test_methods, data=obj.name)  # 重定向到test_methods试图，并传递参数data
+    return redirect("https://www.baidu.com/")
+
+
+def out_side(func_name):
+    """
+    装饰器函数，用于测试装饰器
+    """
+
+    @wraps(func_name)
+    def inner_func(request, *args, **kwargs):
+        print("函数执行之前调用")
+        response = func_name(request, *args, **kwargs, content={"name": "yinshuai", "data": 13123})  # content参数用于传递额外参数
+        print("函数执行之后调用")
+        return response
+
+    return inner_func
+
+
+@out_side
+def test_get_obj(request, *args, **kwargs):
+    data = kwargs.get("content")  # 获取装饰器传递的额外参数
+    print("从装饰器函数中返回的数据: ", data)
+
+    print("已经成功调用装饰器函数了")
+    data = get_list_or_404(Student, age__gt=20)
+    print(data)
+    return HttpResponse(data, status=200)
