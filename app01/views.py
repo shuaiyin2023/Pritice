@@ -13,6 +13,7 @@ from rest_framework import status
 from rest_framework.views import Response, APIView
 
 from app01.models import *
+from utils.decorators import out_side
 
 
 def upload_file_in_chunks(file, chunk_size=1024 * 1024):
@@ -216,21 +217,6 @@ def redirect_view(request):
     obj = Student.objects.get(pk=1)
     # return redirect(test_methods, data=obj.name)  # 重定向到test_methods试图，并传递参数data
     return redirect("https://www.baidu.com/")
-
-
-def out_side(func_name):
-    """
-    装饰器函数，用于测试装饰器
-    """
-
-    @wraps(func_name)
-    def inner_func(request, *args, **kwargs):
-        print("函数执行之前调用")
-        response = func_name(request, *args, **kwargs, content={"name": "yinshuai", "data": 13123})  # content参数用于传递额外参数
-        print("函数执行之后调用")
-        return response
-
-    return inner_func
 
 
 @out_side

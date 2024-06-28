@@ -83,48 +83,70 @@
 # print(longest_consecutive(nums_list))
 
 
-def move_zero(nums):
+# def move_zero(nums):
+#     """
+#     此函数用于编写移动0的算法
+#     给定一个数组 nums，编写一个函数将所有 0 移动到数组的末尾，同时保持非零元素的相对顺序。
+#     请注意 ，必须在不复制数组的情况下原地对数组进行操作。
+#
+#     示例 1:
+#     输入: nums = [0,1,0,3,12]
+#     输出: [1,3,12,0,0]
+#
+#     示例 2:
+#     输入: nums = [0]
+#     输出: [0]
+#     """
+#
+#     # 方式1: 时间复杂度较高，O(N^2)
+#     # 思路: 遍历列表的每一个元素，如果当前的数为0，则从当前数往后开始判断，与找到的第一个非零数交换位置，
+#     # for index in range(len(nums) - 1):
+#     #     if nums[index] == 0:
+#     #         for j in range(index+1, len(nums)):
+#     #             if nums[j] != 0:
+#     #                 nums[index], nums[j] = nums[j], nums[index]
+#     #                 break
+#     #
+#     # return nums
+#
+#     # 方式2: 时间复杂度低 O(N)
+#     # 思路: 先遍历整个列表，将所有非零的数按照相对的顺序放到列表中，并记录下最后一个非零数的位置，
+#     # 再使用循环从最后一个非零数的位置到列表的最后一个位置，将这些位置的值全部填充为0即可
+#     nonzero_index = 0
+#     for i in range(len(nums)):
+#         if nums[i] != 0:
+#             nums[nonzero_index] = nums[i]
+#             nonzero_index += 1
+#
+#     for j in range(nonzero_index, len(nums)):
+#         nums[j] = 0
+#
+#     return nums
+#
+#
+# nums = [0, 1, 0, 3, 12]
+# # nums = [0, 0, 1]
+# # nums = [0, 0, 0, 0, 0, 0, 1, 1, 1]
+# print(move_zero(nums))
+
+
+def climb_stairs(n):
     """
-    此函数用于编写移动0的算法
-    给定一个数组 nums，编写一个函数将所有 0 移动到数组的末尾，同时保持非零元素的相对顺序。
-    请注意 ，必须在不复制数组的情况下原地对数组进行操作。
-
-    示例 1:
-    输入: nums = [0,1,0,3,12]
-    输出: [1,3,12,0,0]
-
-    示例 2:
-    输入: nums = [0]
-    输出: [0]
+    爬楼梯
+    每次可以爬1阶或者2阶，求爬n阶有多少种方法
+    f(n) = f(n-1) + f(n-2)
     """
+    if n <= 2:
+        return n
 
-    # 方式1: 时间复杂度较高，O(N^2)
-    # 思路: 遍历列表的每一个元素，如果当前的数为0，则从当前数往后开始判断，与找到的第一个非零数交换位置，
-    # for index in range(len(nums) - 1):
-    #     if nums[index] == 0:
-    #         for j in range(index+1, len(nums)):
-    #             if nums[j] != 0:
-    #                 nums[index], nums[j] = nums[j], nums[index]
-    #                 break
-    #
-    # return nums
-
-    # 方式2: 时间复杂度低 O(N)
-    # 思路: 先遍历整个列表，将所有非零的数按照相对的顺序放到列表中，并记录下最后一个非零数的位置，
-    # 再使用循环从最后一个非零数的位置到列表的最后一个位置，将这些位置的值全部填充为0即可
-    nonzero_index = 0
-    for i in range(len(nums)):
-        if nums[i] != 0:
-            nums[nonzero_index] = nums[i]
-            nonzero_index += 1
-
-    for j in range(nonzero_index, len(nums)):
-        nums[j] = 0
-
-    return nums
+    before_one, before_two = 1, 2
+    current_num = 0
+    for i in range(2, n):
+        current_num = before_one + before_two
+        before_one = before_two
+        before_two = current_num
+    return current_num
 
 
-nums = [0, 1, 0, 3, 12]
-# nums = [0, 0, 1]
-# nums = [0, 0, 0, 0, 0, 0, 1, 1, 1]
-print(move_zero(nums))
+result = climb_stairs(45)
+print(result)
