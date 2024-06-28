@@ -130,23 +130,23 @@
 # print(move_zero(nums))
 
 
-def climb_stairs(n):
-    """
-    爬楼梯
-    每次可以爬1阶或者2阶，求爬n阶有多少种方法
-    f(n) = f(n-1) + f(n-2)
-    """
-    if n <= 2:
-        return n
-
-    before_one, before_two = 1, 2
-    current_num = 0
-    for i in range(2, n):
-        current_num = before_one + before_two
-        before_one = before_two
-        before_two = current_num
-    return current_num
-
-
-result = climb_stairs(45)
-print(result)
+# def climb_stairs(n):
+#     """
+#     爬楼梯
+#     每次可以爬1阶或者2阶，求爬n阶有多少种方法
+#     f(n) = f(n-1) + f(n-2)
+#     """
+#     if n <= 2:
+#         return n
+#
+#     before_one, before_two = 1, 2
+#     current_num = 0
+#     for i in range(2, n):
+#         current_num = before_one + before_two
+#         before_one = before_two
+#         before_two = current_num
+#     return current_num
+#
+#
+# result = climb_stairs(45)
+# print(result)
