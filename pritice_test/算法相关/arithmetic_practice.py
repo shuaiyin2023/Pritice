@@ -154,42 +154,89 @@
 import time
 
 
-def pascal_triangle(num_rows):
+# def pascal_triangle(num_rows):
+#     """
+#     杨辉三角
+#     给定一个非负整数 numRows，生成「杨辉三角」的前 numRows 行。
+#     1 <= num_rows <= 30
+#     """
+#
+#     # 方式一：暴力法，生成每一行的元素，时间复杂度O(n^2)
+#     # final_list = []
+#     #
+#     # for i in range(num_rows):  # 循环所有行
+#     #     final_list.append([1 for _ in range(0, i + 1)])
+#     #     if i - 1 < 0:  # 如果是第一行，不需要计算
+#     #         continue
+#     #
+#     #     for j in range(1, i):
+#     #         final_list[i][j] = final_list[i-1][j-1] + final_list[i-1][j]
+#     #
+#     # return final_list
+#
+#     # 方式二：优化，只生成需要的元素，时间复杂度O(n^2)
+#     final_list = [[1]]
+#     if num_rows == 1:
+#         return final_list
+#
+#     for i in range(1, num_rows):
+#         row = [1]
+#         for j in range(1, i):
+#             row.append(final_list[i - 1][j - 1] + final_list[i - 1][j])
+#         row.append(1)
+#         final_list.append(row)
+#
+#     return final_list
+#
+#
+# rows = 30
+# result = pascal_triangle(rows)
+# print(f"前{rows}行的杨辉三角:\n", result)
+
+
+def water_container(heights):
     """
-    杨辉三角
-    给定一个非负整数 numRows，生成「杨辉三角」的前 numRows 行。
-    1 <= num_rows <= 30
+    力扣第 11 题: 盛水最多的容器
+    给定一个长度为 n 的整数数组 height 。有 n 条垂线，第 i 条线的两个端点是 (i, 0) 和 (i, height[i]) 。
+    找出其中的两条线，使得它们与 x 轴共同构成的容器可以容纳最多的水。
+    返回容器可以储存的最大水量。
+    输入：[1,8,6,2,5,4,8,3,7]
+    输出：49
+    解释：图中垂直线代表输入数组 [1,8,6,2,5,4,8,3,7]。在此情况下，容器能够容纳水（表示为蓝色部分）的最大值为 49。
     """
 
-    # 方式一：暴力法，生成每一行的元素，时间复杂度O(n^2)
-    # final_list = []
+    # 方式一: 遍历每一个位置，计算以该位置为右下角的矩阵的最大容量，时间复杂度O(n^3)，数据量小的情况下可行，数据量过大时，时间复杂度过高，会超时
+    # index_count = max_water_volume = 0
     #
-    # for i in range(num_rows):  # 循环所有行
-    #     final_list.append([1 for _ in range(0, i + 1)])
-    #     if i - 1 < 0:  # 如果是第一行，不需要计算
-    #         continue
-    #
-    #     for j in range(1, i):
-    #         final_list[i][j] = final_list[i-1][j-1] + final_list[i-1][j]
-    #
-    # return final_list
+    # for i in range(len(heights) - 1):
+    #     for j in range(i + 1, len(heights)):
+    #         index_count += 1
+    #         if heights[i] > heights[j]:
+    #             min_height = heights[j]
+    #         else:
+    #             min_height = heights[i]
+    #         temporary_water_volume = min_height * index_count
+    #         max_water_volume = max(max_water_volume, temporary_water_volume)
+    #     index_count = 0
 
-    # 方式二：优化，只生成需要的元素，时间复杂度O(n^2)
-    final_list = [[1]]
-    if num_rows == 1:
-        return final_list
+    # 方式二: 双指针
+    max_water_volume, left_pointer, right_pointer = 0, 0, len(heights) - 1
 
-    for i in range(1, num_rows):
-        row = [1]
-        for j in range(1, i):
-            row.append(final_list[i-1][j-1] + final_list[i-1][j])
-        row.append(1)
-        final_list.append(row)
+    while left_pointer <= right_pointer:
+        temporary_water_volume = min(heights[left_pointer], heights[right_pointer]) * (right_pointer - left_pointer)
+        max_water_volume = max(max_water_volume, temporary_water_volume)
+        if heights[left_pointer] < heights[right_pointer]:
+            left_pointer += 1
+        else:
+            right_pointer -= 1
 
-    return final_list
+    return max_water_volume
 
 
-rows = 30
-result = pascal_triangle(rows)
-print(f"前{rows}行的杨辉三角:\n", result)
+height = [1, 8, 6, 2, 5, 4, 8, 3, 7]
+start_time = time.time()
+result = water_container(height)
+print("程序执行时间: ", time.time() - start_time)
+print("容器最大可以存储的水量: ", result)
+
 
