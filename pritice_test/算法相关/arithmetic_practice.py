@@ -150,3 +150,46 @@
 #
 # result = climb_stairs(45)
 # print(result)
+
+import time
+
+
+def pascal_triangle(num_rows):
+    """
+    杨辉三角
+    给定一个非负整数 numRows，生成「杨辉三角」的前 numRows 行。
+    1 <= num_rows <= 30
+    """
+
+    # 方式一：暴力法，生成每一行的元素，时间复杂度O(n^2)
+    # final_list = []
+    #
+    # for i in range(num_rows):  # 循环所有行
+    #     final_list.append([1 for _ in range(0, i + 1)])
+    #     if i - 1 < 0:  # 如果是第一行，不需要计算
+    #         continue
+    #
+    #     for j in range(1, i):
+    #         final_list[i][j] = final_list[i-1][j-1] + final_list[i-1][j]
+    #
+    # return final_list
+
+    # 方式二：优化，只生成需要的元素，时间复杂度O(n^2)
+    final_list = [[1]]
+    if num_rows == 1:
+        return final_list
+
+    for i in range(1, num_rows):
+        row = [1]
+        for j in range(1, i):
+            row.append(final_list[i-1][j-1] + final_list[i-1][j])
+        row.append(1)
+        final_list.append(row)
+
+    return final_list
+
+
+rows = 30
+result = pascal_triangle(rows)
+print(f"前{rows}行的杨辉三角:\n", result)
+
