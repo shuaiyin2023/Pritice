@@ -240,3 +240,129 @@ print("程序执行时间: ", time.time() - start_time)
 print("容器最大可以存储的水量: ", result)
 
 
+def flaccid_series(n):
+    """
+    斐波拉契数列
+    求前n项斐波拉契数列
+    """
+
+    # 方式一: 迭代法，时间复杂度O(n)
+    if n == 0:
+        return []
+
+    fib_list = []
+    for i in range(n):
+        if i == 0 or i == 1:
+            fib_list.append(1)
+        else:
+            fib_list.append(fib_list[i - 1] + fib_list[i - 2])
+
+    return fib_list
+
+
+n = 5
+result = flaccid_series(n)
+print(f"斐波拉契数列前{n}项: ", result)
+
+
+def three_num_sum(nums):
+    """
+    力扣第 15 题：三数之和
+    给你一个整数数组 nums ，判断是否存在三元组 [nums[i], nums[j], nums[k]] 满足 i != j、i != k 且 j != k ，同时还满足 nums[i] + nums[j] + nums[k] == 0 。请
+    你返回所有和为 0 且不重复的三元组。
+    注意：答案中不可以包含重复的三元组
+    示例 1：
+
+    输入：nums = [-1,0,1,2,-1,-4]
+    输出：[[-1,-1,2],[-1,0,1]]
+    解释：
+    nums[0] + nums[1] + nums[2] = (-1) + 0 + 1 = 0 。
+    nums[1] + nums[2] + nums[4] = 0 + 1 + (-1) = 0 。
+    nums[0] + nums[3] + nums[4] = (-1) + 2 + (-1) = 0 。
+    不同的三元组是 [-1,0,1] 和 [-1,-1,2] 。
+    注意，输出的顺序和三元组的顺序并不重要。
+    """
+
+    # 方式1：时间复杂度过高，在力扣上提交不能通过
+    # nums = sorted(nums)
+    # print(nums)
+    # if len(nums) < 3 or nums[0] > 0 or nums[-1] < 0:
+    #     return []
+    #
+    # result_list = []
+    #
+    # for i in range(len(nums)-1):
+    #     left_pointer, right_pointer = i + 1, len(nums) - 1
+    #     while left_pointer < right_pointer:
+    #         current_sum = nums[i] + nums[left_pointer] + nums[right_pointer]
+    #         print("当前: ", i, left_pointer, right_pointer, [nums[i], nums[left_pointer], nums[right_pointer]])
+    #         if current_sum < 0:
+    #             # while left_pointer < right_pointer:
+    #             if i == left_pointer or i == right_pointer or left_pointer == right_pointer:
+    #                 continue
+    #             current_sum = nums[i] + nums[left_pointer] + nums[right_pointer]
+    #             # print("小于: ", i, left_pointer, right_pointer, [nums[i], nums[left_pointer], nums[right_pointer]])
+    #             if current_sum == 0:
+    #                 current_list = sorted([nums[i], nums[left_pointer], nums[right_pointer]])
+    #                 if current_list not in result_list:
+    #                     result_list.append(current_list)
+    #             left_pointer += 1
+    #         elif current_sum > 0:
+    #             # while left_pointer < right_pointer:
+    #             if i == left_pointer or i == right_pointer or left_pointer == right_pointer:
+    #                 continue
+    #             current_sum = nums[i] + nums[left_pointer] + nums[right_pointer]
+    #             # print("大于: ", i, left_pointer, right_pointer, [nums[i], nums[left_pointer], nums[right_pointer]])
+    #             if current_sum == 0:
+    #                 current_list = sorted([nums[i], nums[left_pointer], nums[right_pointer]])
+    #                 if current_list not in result_list:
+    #                     result_list.append(current_list)
+    #             right_pointer -= 1
+    #         else:
+    #             # print("等于: ", i, left_pointer, right_pointer, [nums[i], nums[left_pointer], nums[right_pointer]])
+    #             current_sum = nums[i] + nums[left_pointer] + nums[right_pointer]
+    #             if current_sum == 0:
+    #                 current_list = sorted([nums[i], nums[left_pointer], nums[right_pointer]])
+    #                 if current_list not in result_list:
+    #                     result_list.append(current_list)
+    #                 left_pointer += 1
+    #                 right_pointer -= 1
+    #
+    # return result_list
+
+    # 方式2：优化时间复杂度
+    nums.sort()  # 排序，为了后续去重和计算
+    result_list = []
+
+    for i in range(len(nums)):
+        if i > 0 and nums[i] == nums[i - 1]:  # 去重，因为已经排序过，所以如果当前值和下一个值相等，则说明重复了，跳过
+            continue
+
+        left_pointer, right_pointer = i + 1, len(nums) - 1  # 做指针为当前位置后面的位置，右指针为最后一个位置
+        while left_pointer < right_pointer:
+            current_sum = nums[i] + nums[left_pointer] + nums[right_pointer]
+            if left_pointer > i + 1 and nums[left_pointer] == nums[left_pointer - 1]:  # 去重
+                left_pointer += 1
+            elif right_pointer < len(nums) - 1 and nums[right_pointer] == nums[right_pointer + 1]:  # 去重
+                right_pointer -= 1
+            elif current_sum < 0:  # 左指针右移
+                left_pointer += 1
+            elif current_sum > 0:  # 右指针左移
+                right_pointer -= 1
+            else:  # 找到了，添加到结果列表，左右指针同时移动
+                result_list.append([nums[i], nums[left_pointer], nums[right_pointer]])
+                left_pointer += 1
+                right_pointer -= 1
+
+    return result_list
+
+
+# nums_list = [-1, 0, 1, 2, -1, -4]
+# nums_list = [-2, 0, 1, 1, 2]
+# nums_list = [-1,0,1,2,-1,-4]
+# nums_list = [-1, 0, 1, 2, -1, -4, -2, -3, 3, 0, 4]
+# nums_list = [-2,0,1,1,2]
+# nums_list = [-4,-1,-4,0,2,-2,-4,-3,2,-3,2,3,3,-4]
+nums_list = [-2,0,1,1,2]
+result = three_num_sum(nums_list)
+print(f"三元组: ", result)
