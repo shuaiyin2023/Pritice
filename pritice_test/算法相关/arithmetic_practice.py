@@ -363,6 +363,6 @@ def three_num_sum(nums):
 # nums_list = [-1, 0, 1, 2, -1, -4, -2, -3, 3, 0, 4]
 # nums_list = [-2,0,1,1,2]
 # nums_list = [-4,-1,-4,0,2,-2,-4,-3,2,-3,2,3,3,-4]
-nums_list = [-2,0,1,1,2]
+nums_list = [-2, 0, 1, 1, 2]
 result = three_num_sum(nums_list)
 print(f"三元组: ", result)

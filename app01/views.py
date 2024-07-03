@@ -200,7 +200,7 @@ class DataAPIView(APIView):
         # if request.headers[key] != token:
         #     return Response({"msg": "Token错误"}, status=status.HTTP_401_UNAUTHORIZED)
 
-        Student.objects.create(**data)
+        Person.objects.create(**data)
 
         return Response({"msg": "添加成功"}, status=status.HTTP_201_CREATED)
 
