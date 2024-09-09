@@ -44,11 +44,16 @@ class ServiceSocket:
 
     # 5.接收客户端信息
     def recv_msg(self):
-        data = self.conn.recv(1024)
-        print("接收到的客户端{}，信息内容为{}".format(self.addr, data))
+        while True:
+            data = self.conn.recv(1024)
+            print("接收到的客户端{}，信息内容为{}".format(self.addr, data))
 
-        # 6.响应客户端请求
-        self.conn.send("我已经接收到你的消息了，靓仔".encode("utf-8"))
+            # 6.响应客户端请求
+            self.conn.send("我已经接收到你的消息了，靓仔".encode("utf-8"))
+
+            if data.decode("utf-8") == "exit":
+                self.conn.close()
+                break
 
     # 7.关闭连接
     def __del__(self):
