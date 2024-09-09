@@ -21,4 +21,4 @@ while True:     # 通过一个死循环不断接收用户输入，并发送给�
     server_reply = s.recv(1024).decode()
     print(server_reply)
 
-s.close()       # 关闭连接
+    s.close()       # 关闭连接
